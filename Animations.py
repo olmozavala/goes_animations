@@ -1,28 +1,30 @@
 from pandas import DataFrame
 from datetime import *
 import matplotlib.pyplot as plt
-import plotutils
 import numpy as np
-import os
-from DataContainer import *
 
-def makeAnimations(ftp, rootFolder, selectedDate, time, outputFolder):
-    # Folder options:  boundary_layer_altitude_data
-    folder = rootFolder+'/'+dataType+'/'+time+'/'
-    # Create output folder
-    outputFolder = outputFolder+'/'+selectedDate
-    try:
-        os.mkdir(outputFolder)
-    except:
-        print('warning: folder'+outputFolder+' already exists')
+from netCDF4 import Dataset
 
-    files = ftp.nlst(folder)
-    print(files)
-    # Make 'generic' outputfile
-    outFile = outputFolder+'/'
+gfsFile = Dataset("Mexico_2017.0824.154536.goes-16_C04_2km.nc", "r", format="NETCDF4")
 
-    # Iterate over all the files in the current FTP folder
-    for currfile in files:
+# Read dimensions
+dims = gfsFile.dimensions
+#print(dims)
 
-        temp = currfile.rfind('/')+1;
-    
+# Read variables
+gfsVars = gfsFile.variables
+# Print all the variables
+keys = gfsVars.keys()
+print(keys)
+print(gfsVars.get(keys[1]))
+
+varName = keys[0]
+f = plt.figure(figsize=(15,10)) # Make  a larger plot
+myVar = gfsVars.get(varName) #Reads the variable
+
+# From the filtered data, we make the plot
+#plt.imshow(myVar[:])
+#plt.colorbar()
+#plt.show()
+
+gfsFile.close()
