@@ -2,6 +2,8 @@ import pysftp
 from pandas import DataFrame, Series
 import pandas as pd
 from datetime import datetime, date
+import os
+from imagefromgoes import *
 
 host = '132.247.103.143'
 outputFolder = 'output'
@@ -27,17 +29,20 @@ passw = 'conf$39p'
 # 16 CO2
 
 # Define which type of files we want to download
+outputFolder = '/home/olmozavala/outputDELGOES/'
+imagesFolder = 'images'
 fileTypes = {1:"geotiff", 2:"netcdf", 3:"mextiff", 4:"histmex"} 
-fileType = "histmex"
+fileType = "mextiff"
 # Obtain only one band
 bands = ['C13']
 
 # This function MUST receive a date in the format 'YYYY-MM-DD' and a Time in the format 0-24
 if __name__ == "__main__":
-    # Make the connection
 
+    # Make the connection
     with pysftp.Connection(host,username=user,password=passw) as sftp:
 
+        print("Reading data from ftp....")
         # Case for RGB geotiff
         if fileType == fileTypes.get(1):
             sftp.chdir('tif_mexico')
@@ -55,6 +60,7 @@ if __name__ == "__main__":
         files = Series(currFiles)
         #print(files)
 
+        print("Downloading files...")
         # Case for geotiff
         if fileType == fileTypes.get(1):
             data = [[row] for row in files]
@@ -64,7 +70,7 @@ if __name__ == "__main__":
             df = df.tail(3)
             for dfile in df.loc[:]['file']:
                 print('Downloading file: ', dfile)
-                sftp.get(dfile)
+                sftp.get(dfile,localpath=outputFolder)
 
         elif fileType == fileTypes.get(2) or fileType == fileTypes.get(3) or fileType == fileTypes.get(4): 
         # Case for netcdf or mexico geotiff
@@ -83,13 +89,32 @@ if __name__ == "__main__":
                 if  fileType == fileTypes.get(4): #historic
                     idx = df.loc[:]['band'].values == band
                     downFiles = df.loc[:]['file'][idx]
-                else:
-                    idx = df.loc[datetime(today.year,today.month,today.day,max(today.hour-1,0), max(today.minute-30,0)):]['band'].values == band
-                    downFiles = df.loc[datetime(today.year,today.month,today.day,max(today.hour-1,0), max(today.minute-30,0)):]['file'][idx]
+                else: # mextiff
+                    # Read from last day
+                    minDateTime = datetime(today.year,today.month,today.day-1,max(today.hour-1,0), max(today.minute,0))
+
+                    idx = df.loc[minDateTime:]['band'].values == band
+                    downFiles = df.loc[minDateTime:]['file'][idx]
 
                 # Download all the layers for selected band
+                downFiles
                 for dfile in downFiles:
-                    print('Downloading file: ', dfile)
-                    sftp.get(dfile)
+                    filepath = outputFolder+dfile
+                    if not(os.path.isfile(filepath)):
+                        print('Downloading file: ', dfile)
+                        sftp.get(dfile,localpath=filepath)
 
-        # Copy files to the out folder
+    
+    # Create images from output to images
+    print("Getting jpg images....")
+    filesToProcess = os.listdir(outputFolder)
+    for fileName in filesToProcess:
+        try:
+            filepath = outputFolder+fileName
+            outFile = imagesFolder+fileName+'.jpg'
+            if not(os.path.isfile(outFile)):
+                print("Working with: ", filepath)
+                makeJpg(filepath,1, imagesFolder)
+        except:
+            print("ERROR: Not able to create jpg for:", fileName)
+    #break; # This makes to read only one value
