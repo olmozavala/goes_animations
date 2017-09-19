@@ -1,0 +1,124 @@
+/* Space out content a bit */
+body {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  background: #f5f5f5;
+  color: #0A1612;
+  background: -webkit-radial-gradient(circle, #f5f5f5 60%, #c5c0c1);
+  background: -o-radial-gradient(circle, #f5f5f5 60%, #c5c0c1);
+  background: -moz-radial-gradient(circle,#f5f5f5 60%, #c5c0c1);
+  background: radial-gradient(circle,#f5f5f5 60%, #c5c0c1);
+}
+
+.container {
+  /*max-width: 80%;*/
+}
+
+/* Everything gets side spacing for mobile first views */
+.header,
+.marketing,
+.footer {
+  padding-right: 1rem;
+  padding-left: 1rem;
+}
+
+/* Custom page header */
+.header {
+  padding-bottom: 1rem;
+  border-bottom: 0.5rem solid #0A1612;
+}
+.nav_logo{
+  width: 20%;
+}
+.nav_logo_min{
+  padding-top: 1rem;
+  width: 8%;
+}
+
+/* Custom page footer */
+.footer {
+  padding-top: 1rem;
+  /*border-top: .05rem solid #c5c1c0;*/
+}
+
+/* Custom link colors */
+a{
+  color: #0B3C5D;
+}
+a:hover {
+  color: #F7CE3E;
+  text-decoration: none;
+}
+
+/* Supporting marketing content */
+.marketing {
+  margin: 3rem 0;
+}
+.marketing p + h4 {
+  margin-top: 1.5rem;
+}/*
+.the_animation{
+  background: #0B3C5D;
+  color: #F7CE3E;
+}*/
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 48em) {
+  /* Remove the padding we set earlier */
+  .header,
+  .marketing,
+  .footer {
+    padding-right: 0;
+    padding-left: 0;
+  }
+  /* Space out the masthead */
+  .header {
+    margin-bottom: 2rem;
+  }
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+/*Custom animation buttons*/
+.material-icons {
+	font-size: 20px;
+}
+.btn{
+	padding: .2rem 0.2rem;
+}
+.btn-custom{
+	border-bottom:2px solid #ccc;
+ 	position:relative;
+}
+.btn-custom:hover {
+    top:1px;
+    border-bottom-width:1px;
+}
+.btn-custom:active {
+    top:2px;
+    border-bottom:0;
+}
+
+/* Customize container */
+/*
+@media (min-width: 48em) {
+  .container {
+    max-width: 46rem;
+  }
+}
+.container-narrow > hr {
+  margin: 2rem 0;
+}
+canvas {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;   
+}
+.header h3 {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 3rem;
+}
+*/
