@@ -1,6 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor, ImagePalette
 
-
 def Kelvin2Celsius(t):
     kelvin = -273.15
     return t + kelvin
@@ -25,15 +24,20 @@ def creapaleta(i_tempcol):
     return lut
 
 def hazbarra(im,i_tempcol):
-    xc = 1664
-    yc = 1240
-    draw = ImageDraw.Draw(im)
-    d = 256/(255 - i_tempcol) + 1
-    draw.rectangle(((xc, yc), (xc+250, yc+40)), fill=i_tempcol+1)
-    x = xc
-    for i in range(i_tempcol, 255, 1):
-        draw.rectangle(((x, yc), (x+d, yc+40)), fill=i+1)
-        x += d
+    try:
+        xc = 1664
+        yc = 1240
+        draw = ImageDraw.Draw(im)
+        d = 256/(255 - i_tempcol) + 1
+        draw.rectangle(((xc, yc), (xc+250, yc+40)), fill=i_tempcol+1)
+        x = xc
+        for i in range(i_tempcol, 255, 1):
+            draw.rectangle(((x, yc), (x+d, yc+40)), fill=i+1)
+            x += d
+
+    except Exception as e:
+        print("ERROR: Problem generating bar")
+        print(e)
 
 def haztitulo(im, t, i_tempcol):
     x1 = 1250

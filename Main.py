@@ -119,7 +119,7 @@ if __name__ == "__main__":
             if not(os.path.isfile(outFile)):
                 print("Working with: ", filepath)
                 makeJpg(filepath,1, jpgOutFolder)
-        except ValueError:
+        except Exception as e:
             print("ERROR: Not able to create jpg for:", fileName)
-            print(ValueError)
+            print(e)
     #break; # This makes to read only one value
