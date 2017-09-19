@@ -1,12 +1,12 @@
 import pysftp
 from pandas import DataFrame, Series
 import pandas as pd
+import sys, os
 from datetime import datetime, date
-import os
 from imagefromgoes import *
 
 host = '132.247.103.143'
-outputFolder = 'output'
+tiffOutFolder = 'output'
 user= 'usuarioext'
 passw = 'conf$39p'
 
@@ -29,8 +29,6 @@ passw = 'conf$39p'
 # 16 CO2
 
 # Define which type of files we want to download
-outputFolder = '/home/olmozavala/outputDELGOES/'
-imagesFolder = 'images'
 fileTypes = {1:"geotiff", 2:"netcdf", 3:"mextiff", 4:"histmex"} 
 fileType = "mextiff"
 # Obtain only one band
@@ -39,6 +37,12 @@ bands = ['C13']
 # This function MUST receive a date in the format 'YYYY-MM-DD' and a Time in the format 0-24
 if __name__ == "__main__":
 
+    args = sys.argv
+    tiffOutFolder = args[1]
+    jpgOutFolder = args[2]
+
+    print("Folder to save tiff files:", tiffOutFolder)
+    print("Folder to save jpg files:", jpgOutFolder)
     # Make the connection
     with pysftp.Connection(host,username=user,password=passw) as sftp:
 
@@ -70,7 +74,7 @@ if __name__ == "__main__":
             df = df.tail(3)
             for dfile in df.loc[:]['file']:
                 print('Downloading file: ', dfile)
-                sftp.get(dfile,localpath=outputFolder)
+                sftp.get(dfile,localpath=tiffOutFolder)
 
         elif fileType == fileTypes.get(2) or fileType == fileTypes.get(3) or fileType == fileTypes.get(4): 
         # Case for netcdf or mexico geotiff
@@ -99,7 +103,7 @@ if __name__ == "__main__":
                 # Download all the layers for selected band
                 downFiles
                 for dfile in downFiles:
-                    filepath = outputFolder+dfile
+                    filepath = tiffOutFolder+dfile
                     if not(os.path.isfile(filepath)):
                         print('Downloading file: ', dfile)
                         sftp.get(dfile,localpath=filepath)
@@ -107,14 +111,15 @@ if __name__ == "__main__":
     
     # Create images from output to images
     print("Getting jpg images....")
-    filesToProcess = os.listdir(outputFolder)
+    filesToProcess = os.listdir(tiffOutFolder)
     for fileName in filesToProcess:
         try:
-            filepath = outputFolder+fileName
-            outFile = imagesFolder+fileName+'.jpg'
+            filepath = tiffOutFolder+fileName
+            outFile = jpgOutFolder+fileName+'.jpg'
             if not(os.path.isfile(outFile)):
                 print("Working with: ", filepath)
-                makeJpg(filepath,1, imagesFolder)
-        except:
+                makeJpg(filepath,1, jpgOutFolder)
+        except ValueError:
             print("ERROR: Not able to create jpg for:", fileName)
+            print(ValueError)
     #break; # This makes to read only one value

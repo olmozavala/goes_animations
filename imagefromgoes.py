@@ -56,7 +56,9 @@ def makeJpg(filename, resize, outputFolder):
             pco[i, j] = int(c)
     hazbarra(imc, i_tempcol)
     haztitulo(imc, "GOES16 C13 "+dt, i_tempcol)
-    marco = Image.open("marco.png")
+
+#    print(os.path.dirname(os.path.realpath(__file__)))
+    marco = Image.open(os.path.dirname(os.path.realpath(__file__))+"/marco.png")
     out = imc.convert("RGB")
     out.paste(marco, (0,0), marco.convert("L"))
 
