@@ -95,7 +95,7 @@ if __name__ == "__main__":
                     downFiles = df.loc[:]['file'][idx]
                 else: # mextiff
                     # Read from last day
-                    minDateTime = datetime(today.year,today.month,today.day-1,max(today.hour-1,0), max(today.minute,0))
+                    minDateTime = datetime(today.year,today.month,today.day,max(today.hour-1,0), max(today.minute,0))
 
                     idx = df.loc[minDateTime:]['band'].values == band
                     downFiles = df.loc[minDateTime:]['file'][idx]

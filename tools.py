@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont, ImageColor, ImagePalette
+import os
 
 def Kelvin2Celsius(t):
     kelvin = -273.15
@@ -47,6 +48,4 @@ def haztitulo(im, t, i_tempcol):
     fsize = 32
     draw = ImageDraw.Draw(im)
     draw.rectangle(((x1, y1), (x2, y2)), fill=1)
-    draw.text((x1+fsize/2, y1+4), t, fill=i_tempcol, font=ImageFont.truetype("FreeMonoBold.ttf", fsize))
-
-
+    draw.text((x1+fsize/2, y1+4), t, fill=i_tempcol, font=ImageFont.truetype(os.path.dirname(os.path.realpath(__file__))+"/FreeMonoBold.ttf", fsize))

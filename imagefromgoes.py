@@ -37,6 +37,7 @@ def makeJpg(filename, resize, outputFolder):
             a = tif.asarray()
             for page in tif:
                 dt = page.tags['datetime'].value
+                dt = dt.decode("utf-8")
                 #print('Date ', dt)
                 
         h, w = a.shape
