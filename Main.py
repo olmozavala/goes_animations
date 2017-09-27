@@ -43,8 +43,10 @@ if __name__ == "__main__":
 
     print("Folder to save tiff files:", tiffOutFolder)
     print("Folder to save jpg files:", jpgOutFolder)
+    cnopts = pysftp.CnOpts()
+    cnopts.hostkeys = None
     # Make the connection
-    with pysftp.Connection(host,username=user,password=passw) as sftp:
+    with pysftp.Connection(host,username=user,password=passw,cnopts=cnopts) as sftp:
 
         print("Reading data from ftp....")
         # Case for RGB geotiff
