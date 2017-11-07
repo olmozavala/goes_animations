@@ -1,5 +1,6 @@
 #!/bin/bash
 
-tiffOutFolder='/home/olmozavala/outputDELGOES/'
+tiffOutFolder='/home/olmozavala/Dropbox/MyProjects/GOES/Animations/tiffs/'
 jpgOutFolder='/home/olmozavala/Dropbox/MyProjects/GOES/Animations/images/'
-python /home/olmozavala/Dropbox/MyProjects/GOES/Animations/Main.py $tiffOutFolder $jpgOutFolder
+fileType='mextiff'
+python /home/olmozavala/Dropbox/MyProjects/GOES/Animations/Main.py $tiffOutFolder $jpgOutFolder $fileType
