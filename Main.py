@@ -37,7 +37,6 @@ def downloadTiffImages(files, fileType, tiffOutFolder):
     today = datetime.utcnow()
     # Read only from last hour
     minDateTime = today - timedelta(hours=1)
-    print(minDateTime)
 
 # ********************** Case for geotiff ************
     if fileType == fileTypes.get(1):
@@ -116,8 +115,8 @@ if __name__ == "__main__":
     args = sys.argv
 
     if len(args) < 3:
-        tiffOutFolder = 'tiffs'
-        jpgOutFolder = 'images'
+        tiffOutFolder = 'tiffs/'
+        jpgOutFolder = 'images/'
         fileType= 'mextiff'
     else:
         tiffOutFolder = args[1]
@@ -151,3 +150,5 @@ if __name__ == "__main__":
         currFiles = sftp.listdir()
         files = Series(currFiles)
         downloadTiffImages(files,fileType, tiffOutFolder)
+
+        processJpgs(tiffOutFolder, jpgOutFolder)

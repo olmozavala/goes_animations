@@ -34,30 +34,40 @@ def makeJpg(filename, resize, outputFolder):
         name = ntpath.basename(filename) 
         dt = ""
         with tiff.TiffFile(filename) as tif:
-            a = tif.asarray()
+            
+            imgDataAsNumpy = tif.asarray()
+            # Obtains the DateTime from the tiff file and stores it in dt
             for page in tif:
                 dt = page.tags['datetime'].value
                 dt = dt.decode("utf-8")
                 #print('Date ', dt)
                 
-        h, w = a.shape
-        temp_min = np.min(a)
-        temp_max = np.max(a)
+        # Gets the maximum and minimum values from the image array which is wrong.
+        h, w = imgDataAsNumpy.shape
+
+        # Hard code the minimum and maximum values for the color palette
+        temp_min = 213.15 # -60 Celsius
+        temp_max = np.max(imgDataAsNumpy)
 
         print('Temperatures ', temp_min + kelvin, temp_max + kelvin)
 
         imc = Image.new("P", (w, h))
         pco = imc.load()
-        i_tempcol = temptoindex(Celsius2Kelvin(-32.0), temp_max, temp_min)
-        p = creapaleta(i_tempcol)
+
+        # Computes the minimum index for the palette (equivalent to -32 Celsius)
+        minTempIdx = int(temptoindex(Celsius2Kelvin(-30.0), temp_max, temp_min))
+        p = creapaleta(minTempIdx)
         imc.putpalette(p)
+
+        # Compute the 'color' index temperature value for the image
+        temp = ((temp_max - imgDataAsNumpy)*256)/(temp_max - temp_min + .0001)
 
         for j in range(h-1):
             for i in range(w-1):
-                c = temptoindex(a[j, i], temp_max, temp_min)
-                pco[i, j] = int(c)
-        hazbarra(imc, i_tempcol)
-        haztitulo(imc, "GOES16 C13 "+dt, i_tempcol)
+                pco[i, j] = int(temp[j,i])
+
+        hazbarra(imc, minTempIdx)
+        haztitulo(imc, "GOES16 C13 UTC: "+dt, minTempIdx)
 
     #    print(os.path.dirname(os.path.realpath(__file__)))
         marco = Image.open(os.path.dirname(os.path.realpath(__file__))+"/marco.png")
