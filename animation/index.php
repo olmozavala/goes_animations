@@ -11,72 +11,74 @@
   <body>
   
   <div class="container">
-    <div class="header clearfix">
-      
-      <!-- <h3 class="text-muted">GOES</h3> -->
-      <div class="text-center">
-        <img src="img/goes-r-page-logo.png" class="nav_logo" />
-      </div>
-      <div class="text-center">
-        <img src="img/unam.png" class="nav_logo_min"  />
-        <img src="img/logo.png" class="nav_logo_min"  />
-      </div>
-    </div>
-
+    
     <div class="card mb-3">
-      <!--div class="row">
-          <div class="col"-->   
-              <!-- the animation -->
-              <img id="animation" class="card-img-top img-fluid">
-              <!--br>
-          </div>
-      </div-->    
-      
-<!--       <div class="row marketing"> -->
+          
+          <!-- the animation -->
+          <div class="loader" id="loader" style="display: block;"></div>
+          <img id="animation" class="card-img-top img-fluid no-padding" style="display: none;">
+          
+          <!-- the controls for the animation -->
           <div class="card-body">
             <FORM Method="POST" Name="control_form" class="form-inline form-horizontal col-centered">
-              <button type="button" onClick="go2image(first_image)" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Ir a la primera imagen" >
-                <i class="material-icons" >skip_previous</i>
-              </button>
-              <button type="button" onClick="go2image(--current_image)" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Imagen anterior">
-                <i class="material-icons" >fast_rewind</i>
-              </button>
-              <button type="button" onClick="rev()" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Rev">
-                <i class="material-icons" >navigate_before</i>
-              </button>
-              <button type="button" onClick="stop()" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Pausa">
-                <i class="material-icons" >pause</i>
-              </button>
-              <button type="button" onClick="fwd()" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Fwd">
-                <i class="material-icons"  >navigate_next</i>
-              </button>
-              <button type="button" onClick="go2image(++current_image)" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Imagen siguiente">
-                <i class="material-icons"  >fast_forward</i>
-              </button>
-              <button type="button" onClick="go2image(last_image)" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Ir a la última imagen">
-                <i class="material-icons"  >skip_next</i>
-              </button>
-              &nbsp;&nbsp;
-              <label for="frame_nr" class="small">&nbsp;Imagen&nbsp;</label>  
-              <INPUT TYPE="text" NAME="frame_nr" VALUE="0" SIZE="2" class="form-control form-control-sm" onChange="go2image(parseInt(this.value))">
-              <span class="small"> &nbsp;/<span id="lastimage"></span>&nbsp; </span>
-              &nbsp;&nbsp;
-              <button type="button" class="btn btn-light btn-custom" onClick="change_speed(100)" data-toggle="tooltip" data-placement="bottom" title="Menos velocidad">
-                <i class="material-icons" >remove</i>
-              </button>
-              <button type="button" class="btn btn-light btn-custom" onClick="change_speed(-100)" data-toggle="tooltip" data-placement="bottom" title="Mas velocidad">
-                <i class="material-icons" >add</i>
-              </button>
-              &nbsp;&nbsp;
-              <label for="speed" class="small">&nbsp;Velocidad &nbsp; </label>
-              <INPUT TYPE="text" NAME="speed" VALUE="0" SIZE="2" class="form-control form-control-sm" readonly="readonly" />
+              
+            <button type="button" onClick="go2image(first_image)" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Ir a la primera imagen" >
+              <i class="material-icons" >skip_previous</i>
+            </button>
+            <button type="button" id="btn_frwd" style="display: none;" onClick="change_speed(100)" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Menor velocidad">
+              <i class="material-icons" >fast_rewind</i>
+            </button>
+            <button type="button" id="btn_rev" style="display: none;" onClick="rev()" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Reversa">
+              <i class="material-icons" >replay</i>
+            </button>
+            <button type="button" id="btn_prev" style="display: inline;" onClick="go2image(--current_image)" class="btn btn-light btn-custom"  data-toggle="tooltip" data-placement="bottom" title="Imagen anterior">
+              <i class="material-icons" >navigate_before</i>
+            </button>
+            <button type="button" id="btn_stop" style="display: none;" onClick="stop()" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Pausa">
+              <i class="material-icons" >pause</i>
+            </button>
+
+            <button type="button" id="btn_play" style="display: inline;" onClick="fwd()" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Play">
+              <i class="material-icons" >play_arrow</i>
+            </button>
+            
+
+            <button type="button" id="btn_next" style="display: inline;" onClick="go2image(++current_image)" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Imagen siguiente">
+              <i class="material-icons"  >navigate_next</i>
+            </button>
+            <button type="button" id="btn_ffwd" style="display: none;" onClick="change_speed(-100)" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Mayor velocidad">
+              <i class="material-icons"  >fast_forward</i>
+            </button>
+            <button type="button" onClick="go2image(last_image)" class="btn btn-light btn-custom" data-toggle="tooltip" data-placement="bottom" title="Ir a la última imagen">
+              <i class="material-icons"  >skip_next</i>
+            </button>
+            
+            <label for="frame_nr" class="small">&nbsp;Imagen&nbsp;</label>  
+            <INPUT TYPE="text" NAME="frame_nr" VALUE="0" style="width: 42px;" class="form-control form-control-sm" onChange="go2image(parseInt(this.value))">
+            <span class="small"> &nbsp;/<span id="lastimage"></span>&nbsp;&nbsp;&nbsp; </span>
+            
+
+            <label for="speed" class="small">&nbsp;Velocidad &nbsp; </label>
+            <INPUT TYPE="text" NAME="speed" SIZE="2" class="form-control form-control-sm" style="width: 42px;" readonly="readonly" /> 
             </FORM>              
           </div>
     </div>
 
 
     <footer class="footer">
-      <p>By <a href='https://www.atmosfera.unam.mx/ciencias-atmosfericas/modelos-climaticos/alejandro-aguilar-sierra'>M. S. Alejandro Aguilar</a>, <a href='http://olmozavala.com'>Ph.D. Olmo Zavala</a> and <a href="https://github.com/ixchelzg">M.S. Ixchel Zazueta</a>, 2017</p>
+      
+
+      <div class="d-flex justify-content-end" style="height: 65px;">
+
+      <p class="mr-auto p-2">By <a href='https://www.atmosfera.unam.mx/ciencias-atmosfericas/modelos-climaticos/alejandro-aguilar-sierra'>M. S. Alejandro Aguilar</a>, <a href='http://olmozavala.com'>Ph.D. Olmo Zavala</a> and <a href="https://github.com/ixchelzg">M.S. Ixchel Zazueta</a>, 2017</p>
+      
+          <img src="img/goes-r-page-logo.png" class="nav_logo_min" />
+          <img src="img/IG.png" class="nav_logo_min"  />
+          <img src="img/unam.png" class="nav_logo_min"  />
+          <img src="img/logo.png" class="nav_logo_min"  />
+
+      </div>
+
     </footer>
 
   </div>
@@ -87,13 +89,22 @@
 
     <script language="JavaScript"> 
       $(function () {
-        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+          trigger : 'hover'
+        });
         $('.popover-dismiss').popover({
-          trigger: 'focus'
+          trigger: 'hover'
         });
         images_names.sort(naturalCompare);
         launch();
       });
+
+      function toggledisplay(elementID)
+      {
+        (function(style) {
+            style.display = style.display === 'none' ? '' : 'none';
+        })(document.getElementById(elementID).style);
+      }
 
       image_type = "jpg";                   //"gif" or "jpg" or whatever your browser can display
       images_names = <?php echo json_encode($images); ?>;
@@ -125,6 +136,10 @@
       size_valid = 0;
       var loadCount = 1;
       var last_image_;
+      var lewidth;
+      var leheight;
+
+      speed_text = 1;
 
       //===> makes sure the first image number is not bigger than the last image number
       if (first_image > last_image)
@@ -159,6 +174,7 @@
          //document.animation.src = theImages[current_image].src;
          // Drawing the default version of the image on the canvas:
          draw_slide(theImages[current_image]);
+         document.control_form.frame_nr.value = current_image+1;
          timeID = setTimeout("animate_fwd()", delay);
          //window.alert("Estoy en animate_fwd el ID es:"+timeID);  
       }
@@ -182,6 +198,7 @@
          };   
          
          draw_slide(theImages[current_image]);
+         document.control_form.frame_nr.value = current_image+1;
          timeID = setTimeout("animate_rev()", delay);
          //window.alert("Estoy en animate_bkw el ID es:"+timeID);        
       }
@@ -204,7 +221,14 @@
       function stop()
       {       
          //window.alert("Estoy en stop borrando el ID:"+timeID);
-         clearTimeout(timeID);          
+         clearTimeout(timeID);       
+         toggledisplay('btn_play');
+         toggledisplay('btn_stop');
+         toggledisplay('btn_ffwd');
+         toggledisplay('btn_frwd');
+         toggledisplay('btn_next');
+         toggledisplay('btn_prev');          
+         toggledisplay('btn_rev');   
          status = 0;
       }
 
@@ -219,7 +243,7 @@
       //===> jumps to a given image number
       function go2image(number)
       {
-         stop();
+         //stop();
          //window.alert(number);
          if (number > last_image){
              number = first_image;
@@ -230,16 +254,37 @@
          current_image = number;
          //document.animation.src = theImages[current_image].src;
          draw_slide(theImages[current_image]);
+         document.control_form.frame_nr.value = parseInt(current_image)+1;
       }
 
       //===> "play reverse"
+      toggleRev = 1;
       function rev()
       {
-         stop();
+         //stop();
+         var element = document.getElementById("btn_rev");
+         element.classList.toggle("btn_rev_pressed");
+         clearTimeout(timeID);
          status = 1;
-         animate_rev();
+
+         if(toggleRev == 1){
+          animate_rev();
+          document.getElementById("btn_rev").onclick = animate_fwd;
+          toggleRev++;
+         } else {
+          animate_fwd();
+          document.getElementById("btn_rev").onclick = rev;
+          toggleRev--;
+         }
+         
       }
 
+      //===> changes play mode (normal, loop, swing)
+      function change_mode(mode)
+      {
+         play_mode = mode;
+      }
+      
       var terminoDeCargar = false;
       var ultimaImagenCargada = 0;
 
@@ -253,17 +298,19 @@
               theImages[i].onload = imagesloaded;
                  
               current_image=i;
-              // Drawing the default version of the image on the canvas:
+              document.control_form.frame_nr.value = current_image+1;
         }
       }
 
       var items = [/*...*/];
       //called after each image is loaded and when all images are loaded, starts the show
       function imagesloaded() {
-        if (last_image === loadCount) {
+        if (loadCount == last_image) {
           terminoDeCargar = true;
+          toggledisplay('loader');
+          toggledisplay('animation');
           //console.log('termino.');
-          launch();
+          //launch();
         }
         loadCount++;
       }
@@ -295,6 +342,7 @@
         fwd();   
            
         current_image = first_image;      
+        document.control_form.speed.value = speed_text;
         // Drawing the default version of the image on the canvas:
         draw_slide(theImages[current_image]);
         
