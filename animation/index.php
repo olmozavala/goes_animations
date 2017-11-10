@@ -6,6 +6,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
   </head>
   
   <body>
@@ -59,7 +62,27 @@
             
 
             <label for="speed" class="small">&nbsp;Velocidad &nbsp; </label>
-            <INPUT TYPE="text" NAME="speed" SIZE="2" class="form-control form-control-sm" style="width: 42px;" readonly="readonly" /> 
+            <INPUT TYPE="text" NAME="speed" SIZE="2" class="form-control form-control-sm" style="width: 42px;" readonly="readonly" />
+
+	    <label for="datefirst" class="small">&nbsp;Fecha inicial &nbsp; </label>
+            <input type="text" id="datefirstimage" name="datefirstimage"
+		   class="form-control form-control-sm"
+                   onChange="set_first_image_from_date(this.value)" />
+            &nbsp;&nbsp;
+            <label for="datelast" class="small">&nbsp;Fecha final &nbsp; </label>
+            <input type="text" id="datelastimage" name="datelastimage"
+		   class="form-control form-control-sm"
+                   onChange="set_last_image_from_date(this.value)" />
+            &nbsp;&nbsp;
+
+	    <label for="torments" class="small">&nbsp;Tormenta &nbsp; </label>
+            <select name="storms" id="storms" class="small" onChange="set_dates_from_storm(this.value)">
+              <option value="all">Todas</option>
+            </select>
+
+
+	    
+	    
             </FORM>              
           </div>
     </div>
@@ -83,271 +106,12 @@
 
   </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
-    <script language="JavaScript"> 
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-          trigger : 'hover'
-        });
-        $('.popover-dismiss').popover({
-          trigger: 'hover'
-        });
-        images_names.sort(naturalCompare);
-        launch();
-      });
-
-      function toggledisplay(elementID)
-      {
-        (function(style) {
-            style.display = style.display === 'none' ? '' : 'none';
-        })(document.getElementById(elementID).style);
-      }
-
-      image_type = "jpg";                   //"gif" or "jpg" or whatever your browser can display
-      images_names = <?php echo json_encode($images); ?>;
-
-      first_image_name = 0;     //Representa el nombre de la primer imagen
-      first_image = 0;                      //first image number
-      last_image ="<?php echo $row_imagenes[0]-1; ?>";      //Representa el numero total de imagenes-1. Esto es, si last_image es 4 entonces en total son 5 imagenes
-      speed_text = 0;
-      var inicioPlayfwd = false;    //Controla la animacion si esta en play o en stop
-      var inicioPlayBkw = false;    //Controla la animacion cuando esta en reversa
-
-         //!!! the size is very important - if incorrect, browser tries to
-         //!!! resize the images and slows down significantly
-      animation_height = 680;              //height of the images in the animation
-      animation_width = 480;               //width of the images in the animation
-      //
-      //=== THE CODE STARTS HERE - no need to change anything below ===
-      //=== global variables ====
-      theImages = new Array();
-      normal_delay = 1000;
-      delay = normal_delay;  //delay between frames in 1/100 seconds
-      delay_step = 10;
-      delay_max = 30000;
-      delay_min = 1;
-      current_image = first_image;     //number of the current image
-      timeID = null;
-      status = 1;            // 0-stopped, 1-playing
-      play_mode = 1;         // 0-normal, 1-loop, 2-swing
-      size_valid = 0;
-      var loadCount = 1;
-      var last_image_;
-      var lewidth;
-      var leheight;
-
-      speed_text = 1;
-
-      //===> makes sure the first image number is not bigger than the last image number
-      if (first_image > last_image)
-      {
-         var help = last_image;
-         last_image = first_image;
-         first_image = help;
-      };
-
-      function draw_slide(image){
-        document.getElementById('animation').src = image.src;
-        document.control_form.frame_nr.value = current_image;        
-      }
-
-      //===> displays image depending on the play mode in forward direction
-      function animate_fwd()
-      {
-         current_image++;   
-         if(current_image > last_image)
-         {
-            if (play_mode == 0)
-            {
-               current_image = last_image;
-               status=0;
-               return;
-            };                           //NORMAL
-            if (play_mode == 1)
-            {
-               current_image = first_image; //LOOP
-            };      
-         };   
-         //document.animation.src = theImages[current_image].src;
-         // Drawing the default version of the image on the canvas:
-         draw_slide(theImages[current_image]);
-         document.control_form.frame_nr.value = current_image+1;
-         timeID = setTimeout("animate_fwd()", delay);
-         //window.alert("Estoy en animate_fwd el ID es:"+timeID);  
-      }
-
-      //===> displays image depending on the play mode in reverse direction
-      function animate_rev()
-      {
-         current_image--;
-         if(current_image < first_image)
-         {
-            if (play_mode == 0)
-            {
-               current_image = first_image;
-               status=0;
-               return;
-            };                           //NORMAL
-            if (play_mode == 1)
-            {
-               current_image = last_image; //LOOP
-            };      
-         };   
-         
-         draw_slide(theImages[current_image]);
-         document.control_form.frame_nr.value = current_image+1;
-         timeID = setTimeout("animate_rev()", delay);
-         //window.alert("Estoy en animate_bkw el ID es:"+timeID);        
-      }
-
-      //===> changes playing speed by adding to or substracting from the delay between frames
-      function change_speed(dv)
-      {
-         if(dv<0)//Esta alreves porque se esta dividiendo el valor  mientras mas grande tons mas chico y asi
-             speed_text++;
-         else
-             speed_text--;
-         document.control_form.speed.value = speed_text;
-         
-         delay+=dv;
-         if(delay > delay_max) delay = delay_max;
-         if(delay < delay_min) delay = delay_min;
-      }
-
-      //===> stop the movie
-      function stop()
-      {       
-         //window.alert("Estoy en stop borrando el ID:"+timeID);
-         clearTimeout(timeID);       
-         toggledisplay('btn_play');
-         toggledisplay('btn_stop');
-         toggledisplay('btn_ffwd');
-         toggledisplay('btn_frwd');
-         toggledisplay('btn_next');
-         toggledisplay('btn_prev');          
-         toggledisplay('btn_rev');   
-         status = 0;
-      }
-
-      //===> "play forward"
-      function fwd()
-      {
-         stop();
-         status = 1;
-         animate_fwd();
-      }
-
-      //===> jumps to a given image number
-      function go2image(number)
-      {
-         //stop();
-         //window.alert(number);
-         if (number > last_image){
-             number = first_image;
-         }
-         if (number < first_image){
-             number = last_image;
-         }
-         current_image = number;
-         //document.animation.src = theImages[current_image].src;
-         draw_slide(theImages[current_image]);
-         document.control_form.frame_nr.value = parseInt(current_image)+1;
-      }
-
-      //===> "play reverse"
-      toggleRev = 1;
-      function rev()
-      {
-         //stop();
-         var element = document.getElementById("btn_rev");
-         element.classList.toggle("btn_rev_pressed");
-         clearTimeout(timeID);
-         status = 1;
-
-         if(toggleRev == 1){
-          animate_rev();
-          document.getElementById("btn_rev").onclick = animate_fwd;
-          toggleRev++;
-         } else {
-          animate_fwd();
-          document.getElementById("btn_rev").onclick = rev;
-          toggleRev--;
-         }
-         
-      }
-
-      //===> changes play mode (normal, loop, swing)
-      function change_mode(mode)
-      {
-         play_mode = mode;
-      }
-      
-      var terminoDeCargar = false;
-      var ultimaImagenCargada = 0;
-
-      function initImages(){
-        console.log(images_names);
-        for (var i = 0; i <= last_image; i++){  
-
-              theImages[i] = new Image();
-              
-              theImages[i].src = images_names[i];
-              theImages[i].onload = imagesloaded;
-                 
-              current_image=i;
-              document.control_form.frame_nr.value = current_image+1;
-        }
-      }
-
-      var items = [/*...*/];
-      //called after each image is loaded and when all images are loaded, starts the show
-      function imagesloaded() {
-        if (loadCount == last_image) {
-          terminoDeCargar = true;
-          toggledisplay('loader');
-          toggledisplay('animation');
-          //console.log('termino.');
-          //launch();
-        }
-        loadCount++;
-      }
-
-      function naturalCompare(a, b) {
-          var ax = [], bx = [];
-
-          a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
-          b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
-          
-          while(ax.length && bx.length) {
-              var an = ax.shift();
-              var bn = bx.shift();
-              var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
-              if(nn) return nn;
-          }
-
-          return ax.length - bx.length;
-      }
-
-      //===> sets everything once the whole page and the images are loaded (onLoad handler in <body>)
-      function launch()
-      {    
-        if(!terminoDeCargar){
-          initImages();
-        } 
-        document.getElementById('lastimage').innerHTML = theImages.length;
-       
-        fwd();   
-           
-        current_image = first_image;      
-        document.control_form.speed.value = speed_text;
-        // Drawing the default version of the image on the canvas:
-        draw_slide(theImages[current_image]);
-        
-      }
-    </SCRIPT>
+    <script language="JavaScript">var images_names = <?php echo json_encode($images); ?>;</script>
+    <script language="JavaScript">var last_idx = "<?php echo $row_imagenes[0]-1; ?>";</script>
+    <script src="js/anima.js"></script>
 
   </body>
 </html>
