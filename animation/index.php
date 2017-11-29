@@ -90,20 +90,22 @@
 
     <footer class="footer">
       
-
       <div class="d-flex justify-content-end" style="height: 65px;">
 
-      <p class="mr-auto p-2">By <a href='https://www.atmosfera.unam.mx/ciencias-atmosfericas/modelos-climaticos/alejandro-aguilar-sierra'>M. S. Alejandro Aguilar</a>, <a href='http://olmozavala.com'>Ph.D. Olmo Zavala</a> and <a href="https://github.com/ixchelzg">M.S. Ixchel Zazueta</a>, 2017</p>
+      <p class="mr-auto p-2">By <a href="https://github.com/ixchelzg">M.S. Ixchel Zazueta</a>, <a href="https://www.atmosfera.unam.mx/ciencias-atmosfericas/modelos-climaticos/alejandro-aguilar-sierra">M. S. Alejandro Aguilar</a> and <a href="http://olmozavala.com">Ph.D. Olmo Zavala</a>, 2017</p>
       
-          <img src="img/goes-r-page-logo.png" class="nav_logo_min" />
-          <img src="img/IG.png" class="nav_logo_min"  />
-          <img src="img/unam.png" class="nav_logo_min"  />
-          <img src="img/logo.png" class="nav_logo_min"  />
-      
+          <img src="img/goes-r-page-logo.png" class="nav_logo_min">
+          <img src="img/IG.png" class="nav_logo_min">
+          <img src="img/unam.png" class="nav_logo_min">
+          <img src="img/logo.png" class="nav_logo_min">
+
       </div>
 
-      <p class="text-muted mt-2"><small>Note: NOAA's GOES-16 satellite has not been declared operational and its data are preliminary and undergoing testing. Users receiving these data through any dissemination means (including, but not limited to, PDA, GeoNetcast Americas, HRIT/EMWIN, and GOES Rebroadcast) assume all risk related to their use of GOES-16 data and NOAA disclaims any and all warranties, whether express or implied, including (without limitation) any implied warranties of merchantability or fitness for a particular purpose.</small>
-      </p>
+      <div class="mt-5">
+        <small class="text-muted">
+        Note: NOAA's GOES-16 satellite has not been declared operational and its data are preliminary and undergoing testing. Users receiving these data through any dissemination means (including, but not limited to, PDA, GeoNetcast Americas, HRIT/EMWIN, and GOES Rebroadcast) assume all risk related to their use of GOES-16 data and NOAA disclaims any and all warranties, whether express or implied, including (without limitation) any implied warranties of merchantability or fitness for a particular purpose.
+        </small>
+      </div>
 
     </footer>
 
@@ -185,6 +187,9 @@
       //===> displays image depending on the play mode in forward direction
       function animate_fwd()
       {
+         if(toggleRev == 2){
+            clearTimeout(timeID);
+         }
          current_image++;   
          if(current_image > last_image)
          {
@@ -199,7 +204,6 @@
                current_image = first_image; //LOOP
             };      
          };   
-         //document.animation.src = theImages[current_image].src;
          // Drawing the default version of the image on the canvas:
          draw_slide(theImages[current_image]);
          timeID = setTimeout("animate_fwd()", delay);
@@ -244,7 +248,6 @@
       //===> stop the movie
       function stop()
       {       
-         //window.alert("Estoy en stop borrando el ID:"+timeID);
          clearTimeout(timeID);       
          toggledisplay('btn_play');
          toggledisplay('btn_stop');
@@ -267,8 +270,6 @@
       //===> jumps to a given image number
       function go2image(number)
       {
-         //stop();
-         //window.alert(number);
          if (number > last_image){
              number = first_image;
          }
@@ -283,18 +284,19 @@
       toggleRev = 1;
       function rev()
       {
-         //stop();
+
+         clearTimeout(timeID);
          var element = document.getElementById("btn_rev");
          element.classList.toggle("btn_rev_pressed");
-         clearTimeout(timeID);
+         
          status = 1;
 
          if(toggleRev == 1){
-          animate_rev();
           toggleRev++;
+          animate_rev();
          } else {
-          animate_fwd();
           toggleRev--;
+          animate_fwd();
          }
          
       }
@@ -316,21 +318,19 @@
               
               theImages[i].src = images_names[i];
               theImages[i].onload = imagesloaded;
-                 
-              current_image=i;
-              //document.control_form.frame_nr.value = parseInt(current_image)+1;
         }
       }
 
       var items = [/*...*/];
       //called after each image is loaded and when all images are loaded, starts the show
       function imagesloaded() {
-        if (loadCount ==  Math.round(last_image/5) ) {
+        if ( loadCount ==  Math.round(last_image/5) ) {
           terminoDeCargar = true;
           toggledisplay('loader');
           toggledisplay('animation');
-          //console.log('termino.');
-          //launch();
+          //draw first image
+          current_image = 0;
+          draw_slide(theImages[current_image]);
         }
         loadCount++;
       }
@@ -358,11 +358,14 @@
           initImages();
         } 
         document.getElementById('lastimage').innerHTML = theImages.length;
-                  
-        current_image = first_image;      
         document.control_form.speed.value = speed_text;
+       
+        /*   
+        fwd(); 
+        current_image = first_image;      
         // Drawing the default version of the image on the canvas:
         draw_slide(theImages[current_image]);
+        */
         
       }
     </script>
