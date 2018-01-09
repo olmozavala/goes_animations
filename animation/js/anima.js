@@ -5,7 +5,6 @@
  * https://github.com/olmozavala/goes_animations
  */
 
-
 $(function () {
     $('[data-toggle="tooltip"]').tooltip({
         trigger : 'hover'
@@ -13,7 +12,7 @@ $(function () {
     $('.popover-dismiss').popover({
         trigger: 'hover'
     });
-
+    
     var lastdate = date_from_filename(images_names[last_image]);
     var firstdate = add_days_to_date(lastdate, -7);
     set_first_image_from_date(firstdate);
@@ -36,7 +35,7 @@ $(function () {
 
     images_names.sort(naturalCompare);
     launch();
-});
+}); 
 
 function toggledisplay(elementID)
 {
@@ -46,12 +45,10 @@ function toggledisplay(elementID)
 }
 
 image_type = "jpg";                   //"gif" or "jpg" or whatever your browser can display
-//      images_names = <?php echo json_encode($images); ?>;
 
 first_image_name = 0;     //Representa el nombre de la primer imagen
 first_image = 0;                      //first image number
-//      last_image ="<?php echo $row_imagenes[0]-1; ?>";      //Representa el numero total de imagenes-1. Esto es, si last_image es 4 entonces en total son 5 imagenes
-last_image = last_idx;
+last_image = last_idx; //numero total de imagenes-1. Esto es, si last_image es 4 entonces en total son 5 imagenes
 speed_text = 0;
 var inicioPlayfwd = false;    //Controla la animacion si esta en play o en stop
 var inicioPlayBkw = false;    //Controla la animacion cuando esta en reversa
@@ -82,18 +79,16 @@ var leheight;
 speed_text = 1;
 
 //===> makes sure the first image number is not bigger than the last image number
-if (first_image > last_image)
-{
+if (first_image > last_image) {
     var help = last_image;
     last_image = first_image;
     first_image = help;
 };
 
-//===> Fuctions to change the dates
-
+//===> As its name says, extract date from filename
 function date_from_filename(name) {
     // Verificar que name tiene el formato y longitud apropiadas.
-    // De acuerdo a formato images/Mexico_2017.0825.194536.goes-16_C13_2km.jpg
+    // images/Mexico_2017.0825.194536.goes-16_C13_2km.jpg
     var yy = 14;
     var mm = yy + 5;
     var dd = mm + 2;
@@ -103,6 +98,7 @@ function date_from_filename(name) {
     return [year, month, day].join('-');
 }
 
+//===> Find the index of the image with the given date
 function idx_from_date(date) {
     for (var i = 0; i <= last_idx; i++) {  
         datei = date_from_filename(images_names[i]);
@@ -145,6 +141,7 @@ function add_days_to_date(date, days) {
     return format_Date_as_ISO8601(myDate);
 }
 
+
 function set_dates_from_storm(value) {
     var firstdate = value.slice(0, 10);
     var lastdate = value.slice(10,20);
@@ -156,15 +153,16 @@ function set_dates_from_storm(value) {
 }
 
 
-
-function draw_slide(image){
+function draw_slide(image) {
     document.getElementById('animation').src = image.src;
-    document.control_form.frame_nr.value = current_image;        
+    document.control_form.frame_nr.value = parseInt(current_image)+1;        
 }
 
 //===> displays image depending on the play mode in forward direction
-function animate_fwd()
-{
+function animate_fwd() {
+    if(toggleRev == 2){
+        clearTimeout(timeID);
+    }
     current_image++;   
     if(current_image > last_image)
     {
@@ -178,18 +176,14 @@ function animate_fwd()
         {
             current_image = first_image; //LOOP
         };      
-    };   
-    //document.animation.src = theImages[current_image].src;
+         };   
     // Drawing the default version of the image on the canvas:
     draw_slide(theImages[current_image]);
-    document.control_form.frame_nr.value = current_image+1;
     timeID = setTimeout("animate_fwd()", delay);
-    //window.alert("Estoy en animate_fwd el ID es:"+timeID);  
 }
 
 //===> displays image depending on the play mode in reverse direction
-function animate_rev()
-{
+function animate_rev() {
     current_image--;
     if(current_image < first_image)
     {
@@ -201,19 +195,16 @@ function animate_rev()
         };                           //NORMAL
         if (play_mode == 1)
         {
-            current_image = last_image; //LOOP
+	    current_image = last_image; //LOOP
         };      
     };   
          
     draw_slide(theImages[current_image]);
-    document.control_form.frame_nr.value = current_image+1;
     timeID = setTimeout("animate_rev()", delay);
-    //window.alert("Estoy en animate_bkw el ID es:"+timeID);        
 }
 
 //===> changes playing speed by adding to or substracting from the delay between frames
-function change_speed(dv)
-{
+function change_speed(dv) {
     if(dv<0)//Esta alreves porque se esta dividiendo el valor  mientras mas grande tons mas chico y asi
         speed_text++;
     else
@@ -226,9 +217,7 @@ function change_speed(dv)
 }
 
 //===> stop the movie
-function stop()
-{       
-    //window.alert("Estoy en stop borrando el ID:"+timeID);
+function stop() {       
     clearTimeout(timeID);       
     toggledisplay('btn_play');
     toggledisplay('btn_stop');
@@ -241,62 +230,53 @@ function stop()
 }
 
 //===> "play forward"
-function fwd()
-{
+function fwd() {
     stop();
     status = 1;
     animate_fwd();
 }
 
 //===> jumps to a given image number
-function go2image(number)
-{
-    //stop();
-    //window.alert(number);
-    if (number > last_image){
+function go2image(number) {
+    if (number > last_image) {
         number = first_image;
     }
-    if (number < first_image){
+    if (number < first_image) {
         number = last_image;
     }
     current_image = number;
-    //document.animation.src = theImages[current_image].src;
     draw_slide(theImages[current_image]);
-    document.control_form.frame_nr.value = parseInt(current_image)+1;
 }
 
 //===> "play reverse"
 toggleRev = 1;
-function rev()
-{
-    //stop();
+function rev() {
+
+    clearTimeout(timeID);
     var element = document.getElementById("btn_rev");
     element.classList.toggle("btn_rev_pressed");
-    clearTimeout(timeID);
+         
     status = 1;
-    
-    if(toggleRev == 1){
-        animate_rev();
-        document.getElementById("btn_rev").onclick = animate_fwd;
+
+    if (toggleRev == 1) {
         toggleRev++;
+        animate_rev();
     } else {
-        animate_fwd();
-        document.getElementById("btn_rev").onclick = rev;
         toggleRev--;
+        animate_fwd();
     }
     
 }
 
 //===> changes play mode (normal, loop, swing)
-function change_mode(mode)
-{
+function change_mode(mode) {
     play_mode = mode;
 }
       
 var terminoDeCargar = false;
 var ultimaImagenCargada = 0;
 
-function initImages(){
+function initImages() {
     console.log(images_names);
     for (var i = 0; i <= last_image; i++){  
 	
@@ -304,54 +284,51 @@ function initImages(){
         
         theImages[i].src = images_names[i];
         theImages[i].onload = imagesloaded;
-        
-        current_image=i;
-        document.control_form.frame_nr.value = current_image+1;
     }
 }
 
 var items = [/*...*/];
 //called after each image is loaded and when all images are loaded, starts the show
 function imagesloaded() {
-    if (loadCount == last_image) {
+    if ( loadCount ==  Math.round(last_image/5) ) {
         terminoDeCargar = true;
         toggledisplay('loader');
         toggledisplay('animation');
-        //console.log('termino.');
-        //launch();
+        //draw first image
+        current_image = 0;
+        draw_slide(theImages[current_image]);
     }
     loadCount++;
 }
 
 function naturalCompare(a, b) {
     var ax = [], bx = [];
-    
+
     a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]) });
     b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]) });
-    
+          
     while(ax.length && bx.length) {
         var an = ax.shift();
         var bn = bx.shift();
         var nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
         if(nn) return nn;
     }
-    
-    return ax.length - bx.length;
+
+          return ax.length - bx.length;
 }
 
 //===> sets everything once the whole page and the images are loaded (onLoad handler in <body>)
-function launch()
-{    
+function launch() {    
     if(!terminoDeCargar){
         initImages();
     } 
     document.getElementById('lastimage').innerHTML = theImages.length;
-    
-    fwd();   
-    
-    current_image = first_image;      
     document.control_form.speed.value = speed_text;
-    // Drawing the default version of the image on the canvas:
-    draw_slide(theImages[current_image]);
-    
+       
+    /*   
+         fwd(); 
+         current_image = first_image;      
+         // Drawing the default version of the image on the canvas:
+         draw_slide(theImages[current_image]);
+    */        
 }
