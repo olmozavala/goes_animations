@@ -24,4 +24,10 @@
                 </div>
         </div>
     </div><!-- Form Group --> 
+	<div class="row">
+        <div class="offset-sm-4 col-sm-4">
+            <button type="button" class="btn btn-dark" onclick="updateAnimation();">update</button>
+        </div>
+    </div>
+
 </form>              

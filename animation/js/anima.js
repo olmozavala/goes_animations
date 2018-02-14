@@ -33,8 +33,8 @@ function initCalendars(){
 		$('#startDatePicker').datetimepicker('maxDate', e.date);
 	});
 
-	$('#startDatePicker').on('change.datetimepicker', function(e){ updateAnimation();});
-	$('#endDatePicker').on('change.datetimepicker', function(e){ updateAnimation();});
+	//$('#startDatePicker').on('change.datetimepicker', function(e){ updateAnimation();});
+	//$('#endDatePicker').on('change.datetimepicker', function(e){ updateAnimation();});
 }
 
 $(function () {
