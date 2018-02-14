@@ -1,3 +1,7 @@
 *.pyc
-/images
+*.ipynb*
+*.idea
+*.swp
+images
 /tiffs
+Link*
