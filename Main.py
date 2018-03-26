@@ -5,7 +5,8 @@ import sys, os
 from datetime import datetime, date, timedelta
 from imagefromgoes import *
 
-host = '132.248.26.119'
+# host = '132.248.26.119'
+host = '132.247.103.143'
 user= 'usuarioext'
 passw = 'conf$39p'
 
@@ -52,9 +53,9 @@ def downloadTiffImages(files, fileType, tiffOutFolder):
     elif fileType == fileTypes.get(2) or fileType == fileTypes.get(3) or fileType == fileTypes.get(4): 
 # ********************** All other cases ************
         # Puts in every row the band and the file name example: ['C13', 'Mexico_2017.....2km.tif']
-        data = [[row.split('_')[2],row] for row in files] 
+        data = [[row.split('_')[2],row] for row in files if row.find('Mex') != -1] 
         # Gets the dates for all the files as an array of datetime
-        dates = [datetime.strptime(row.split('_')[1],"%Y.%m%d.%H%M%S.goes-16") for row in files]
+        dates = [datetime.strptime(row.split('_')[1],"%Y.%m%d.%H%M%S.goes-16") for row in files if row.find('Mex') != -1 ]
         # Creates a DataFrame with two columns, the band and the file name
         filesDataFrame = DataFrame(data,columns=['band','file'],index=dates)
         # For all the selected bands we download todays files
@@ -68,7 +69,7 @@ def downloadTiffImages(files, fileType, tiffOutFolder):
                 idx = filesDataFrame.loc[:]['band'].values == band
                 downFiles = filesDataFrame.loc[:]['file'][idx]
 # ********************** For tif_mexico ************
-            else: # mextiff
+            else: # tif_mexico
                 idx = filesDataFrame.loc[minDateTime:]['band'].values == band
                 downFiles = filesDataFrame.loc[minDateTime:]['file'][idx]
 
@@ -117,14 +118,16 @@ if __name__ == "__main__":
     if len(args) < 3:
         tiffOutFolder = 'tiffs/'
         jpgOutFolder = 'images/'
-        fileType= 'mextiff'
+        fileType= 'tif_mexico'
     else:
         tiffOutFolder = args[1]
         jpgOutFolder = args[2]
         fileType= args[3]
 
+    processJpgs(tiffOutFolder, jpgOutFolder)
+    exit()
     # These are the different options someone can select
-    fileTypes = {1:"geotiff", 2:"netcdf", 3:"mextiff", 4:"histmex"} 
+    fileTypes = {1:"geotiff", 2:"netcdf", 3:"tif_mexico", 4:"histmex"} 
 
     print("Folder to save tiff files:", tiffOutFolder)
     print("Folder to save jpg files:", jpgOutFolder)
@@ -148,7 +151,8 @@ if __name__ == "__main__":
             sftp.chdir('/nexus/proc/products/exportadas/geotiff/mexico')
 
         currFiles = sftp.listdir()
-        files = Series(currFiles)
-        downloadTiffImages(files,fileType, tiffOutFolder)
+        onlyFiles = [curr for curr in currFiles if curr.find('.') != -1]
+        files = Series(onlyFiles)
+        #downloadTiffImages(files,fileType, tiffOutFolder)
 
         processJpgs(tiffOutFolder, jpgOutFolder)

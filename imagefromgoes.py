@@ -33,11 +33,14 @@ def makeJpg(filename, resize, outputFolder):
         kelvin = -273.15
         name = ntpath.basename(filename) 
         dt = ""
+        print("BEFORE")
         with tiff.TiffFile(filename) as tif:
             
             imgDataAsNumpy = tif.asarray()
             # Obtains the DateTime from the tiff file and stores it in dt
+            print(type(tif))
             for page in tif:
+                print("AFTER")
                 dt = page.tags['datetime'].value
                 dt = dt.decode("utf-8")
                 #print('Date ', dt)
